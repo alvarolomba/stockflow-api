@@ -1,0 +1,104 @@
+@baseUrl = http://localhost:8080
+@token = paste-access-token-here
+@productId = 1
+@orderId = 1
+
+### Health check
+GET {{baseUrl}}/actuator/health
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "demo@alvarolomba.dev",
+  "fullName": "Demo User",
+  "password": "DemoPassword123!"
+}
+
+### Login
+# Copy accessToken from the response into @token above.
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@alvarolomba.dev",
+  "password": "DemoPassword123!"
+}
+
+### Current user
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Create product
+# Copy id from the response into @productId above.
+POST {{baseUrl}}/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sku": "KEYBOARD-PRO-001",
+  "name": "Mechanical Keyboard",
+  "priceCents": 12999,
+  "initialStock": 10,
+  "lowStockThreshold": 3
+}
+
+### List products
+GET {{baseUrl}}/products
+Authorization: Bearer {{token}}
+
+### Add inventory
+POST {{baseUrl}}/inventory/movements
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productId": {{productId}},
+  "quantity": 5,
+  "reason": "Supplier restock"
+}
+
+### List inventory movements
+GET {{baseUrl}}/inventory/movements
+Authorization: Bearer {{token}}
+
+### Create order
+# Copy id from the response into @orderId above.
+POST {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": {{productId}},
+      "quantity": 2
+    }
+  ]
+}
+
+### List orders
+GET {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+
+### Pay order
+PATCH {{baseUrl}}/orders/{{orderId}}/pay
+Authorization: Bearer {{token}}
+
+### Cancel order
+# This only works for pending orders.
+PATCH {{baseUrl}}/orders/{{orderId}}/cancel
+Authorization: Bearer {{token}}
+
+### Low-stock products
+GET {{baseUrl}}/reports/low-stock
+Authorization: Bearer {{token}}
+
+### Sales report
+GET {{baseUrl}}/reports/sales
+Authorization: Bearer {{token}}
+
+### Orders by status
+GET {{baseUrl}}/reports/orders-by-status
+Authorization: Bearer {{token}}

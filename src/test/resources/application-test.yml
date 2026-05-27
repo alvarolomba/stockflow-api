@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: test-secret-key-that-is-long-enough-for-hmac
+    expiration-minutes: 60
